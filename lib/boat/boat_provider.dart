@@ -13,7 +13,7 @@ class BoatProvider with ChangeNotifier {
     fetchBoats();
   }
 
- Future<void> fetchBoats() async {
+  Future<void> fetchBoats() async {
     try {
       final response = await http.get(Uri.parse(_baseUrl));
 
@@ -33,28 +33,44 @@ class BoatProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addBoat(Boat boat) async {
-    try {
-      final response = await http.post(
-        Uri.parse(_baseUrl),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(boat.toJson()),
-      );
+Future<void> addBoat(Boat boat) async {
+  try {
+    // Crear un mapa sin el ID
+    final Map<String, dynamic> boatJson = {
+      'nombre': boat.nombre,
+      'tipo': boat.tipo,
+      'velocidadMaxima': boat.velocidadMaxima,
+      'longitud': boat.longitud,
+    };
+    final String body = json.encode({'body': json.encode(boatJson)});  // Enviar JSON envuelto en 'body'
 
-      if (response.statusCode == 201) {
-        boat.id = json.decode(response.body)['id'];
-        _boats.add(boat);
-        print('Boat added successfully: ${boat.toJson()}');
-        notifyListeners();
-      } else {
-        print('Failed to add boat. Status code: ${response.statusCode}, Body: ${response.body}');
-        throw Exception('Failed to add boat');
-      }
-    } catch (error) {
-      print('Error adding boat: $error');
-      rethrow;
+    print('Sending JSON: $body');  // Log the JSON being sent
+
+    final response = await http.post(
+      Uri.parse(_baseUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: body,
+    );
+
+    if (response.statusCode == 201) {
+      boat.id = json.decode(response.body)['id'];
+      _boats.add(boat);
+      print('Boat added successfully: ${boat.toJson()}');
+      notifyListeners();
+    } else {
+      print('Failed to add boat. Status code: ${response.statusCode}, Body: ${response.body}');
+      throw Exception('Failed to add boat');
     }
+  } catch (error) {
+    print('Error adding boat: $error');
+    rethrow;
   }
+}
+
+
+
+
+
 
   Future<void> updateBoat(Boat boat) async {
     try {
