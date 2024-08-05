@@ -79,7 +79,7 @@ class BoatListScreen extends StatelessWidget {
                               if (_selectedBoat == null) {
                                 Provider.of<BoatProvider>(context, listen: false).addBoat(
                                   Boat(
-                                    id: 0,
+                                    id: '0',
                                     nombre: _nombreController.text,
                                     tipo: _tipoController.text,
                                     velocidadMaxima: double.parse(_velocidadMaximaController.text),
@@ -146,7 +146,7 @@ class BoatListScreen extends StatelessWidget {
                               IconButton(
                                 icon: Icon(Icons.delete),
                                 onPressed: () {
-                                  Provider.of<BoatProvider>(context, listen: false).deleteBoat(boat.id);
+                                  Provider.of<BoatProvider>(context, listen: false).deleteBoat(boat.id as int);
                                 },
                                 color: Colors.red[700],
                               ),
